@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import { PceSettingsEditor } from './settings';
 
-import { GamepadControlsTab, KeyboardControlsTab } from './controls';
+import { Pce2GamepadControls, Pce2KeyboardControls, Pce6GamepadControls, Pce6KeyboardControls } from './controls';
 
 import {
   CustomPauseScreen,
@@ -43,8 +43,19 @@ export class EmulatorPauseScreen extends Component {
     } = this.props;
     const { mode } = this.state;
 
-    const gamepad = <GamepadControlsTab />;
-    const gamepadLabel = Resources.getText(TEXT_IDS.GAMEPAD_CONTROLS);
+
+    const emProps = emulator.getProps();
+
+    const gamepad = emProps.pad6button ? <Pce6GamepadControls /> : <Pce2GamepadControls mapRunSelect={emProps.mapRunSelect} />;
+    const keyboard = emProps.pad6button ? <Pce6KeyboardControls /> : <Pce2KeyboardControls mapRunSelect={emProps.mapRunSelect} />;
+    const gamepadLabel = Resources.getText(
+      TEXT_IDS.GAMEPAD_CONTROLS_DETAIL,
+      Resources.getText(emProps.pad6button ? TEXT_IDS.SIX_BUTTON : TEXT_IDS.TWO_BUTTON),
+    );
+    const keyboardLabel = Resources.getText(
+      TEXT_IDS.KEYBOARD_CONTROLS_DETAIL,
+      Resources.getText(emProps.pad6button ? TEXT_IDS.SIX_BUTTON : TEXT_IDS.TWO_BUTTON),
+    );
 
     return (
       <>
@@ -93,8 +104,8 @@ export class EmulatorPauseScreen extends Component {
               },
               {
                 image: KeyboardWhiteImage,
-                label: Resources.getText(TEXT_IDS.KEYBOARD_CONTROLS),
-                content: <KeyboardControlsTab />,
+                label: keyboardLabel,
+                content: keyboard,
               },
             ]}
           />

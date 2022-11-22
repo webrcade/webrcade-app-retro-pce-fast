@@ -348,13 +348,23 @@ export class Emulator extends AppWrapper {
     const { Module } = window;
     const props = this.getProps();
     let options = 0;
-    // multi-tap
+
+    // b buttons
     if (props.pad6button) {
       LOG.info('## 6 button pad on');
       options |= this.OPT1;
     } else {
       LOG.info('## 6 button pad off');
     }
+
+    // map RUN/SELECT
+    if (props.mapRunSelect) {
+      LOG.info('## Map run and select on');
+      options |= this.OPT2;
+    } else {
+      LOG.info('## Map run and select off');
+    }
+
     Module._wrc_set_options(options);
   }
 
