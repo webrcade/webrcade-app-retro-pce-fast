@@ -4,6 +4,7 @@ import {
   removeEmptyArrayItems,
   setMessageAnchorId,
   settings,
+  DiscSelectionEditor,
   FetchAppData,
   Resources,
   UrlUtil,
@@ -11,9 +12,9 @@ import {
   LOG,
   TEXT_IDS,
 } from '@webrcade/app-common';
+
 import { Emulator } from './emulator';
 import { EmulatorPauseScreen } from './pause';
-import { DiscSelectionEditor } from './selectdisc';
 
 import './App.scss';
 
@@ -22,6 +23,7 @@ class App extends WebrcadeApp {
 
   BIOS = {
     '38179df8f4ac870017db21ebcbf53114': 'syscard3.pce',
+    // '08e36edbea28a017f79f8d4f7ff9b6d7': 'pcfx.rom',
   };
 
   MODE_DISC_SELECT = 'discSelectionMode';
