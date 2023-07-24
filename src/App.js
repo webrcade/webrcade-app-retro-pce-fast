@@ -1,6 +1,7 @@
 import React from "react";
 
 import {
+  FetchAppData,
   WebrcadeRetroApp
 } from '@webrcade/app-common';
 
@@ -21,7 +22,24 @@ class App extends WebrcadeRetroApp {
     };
   }
 
+  async fetchBios(bios, biosMap = null, alternateBiosMap = null) {
+    if (this.customBios) {
+      const biosUrl = bios[0];
+      const fad = new FetchAppData(biosUrl);
+      const res = await fad.fetch();
+      const blob = await res.blob();
+      const biosBuffers = {};
+      biosBuffers['syscard3.pce'] = new Uint8Array(await blob.arrayBuffer());
+      return biosBuffers;
+    }
+    return super.fetchBios(bios, biosMap, alternateBiosMap);
+  }
+
   getBiosUrls(appProps) {
+    if (appProps.customBios && appProps.customBios.trim().length > 0) {
+      this.customBios = true;
+      return appProps.customBios.trim();
+    }
     return appProps.pcecd_bios;
   }
 
