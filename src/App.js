@@ -2,7 +2,8 @@ import React from "react";
 
 import {
   FetchAppData,
-  WebrcadeRetroApp
+  WebrcadeRetroApp,
+  APP_TYPE_KEYS,
 } from '@webrcade/app-common';
 
 import { Emulator } from './emulator';
@@ -41,6 +42,14 @@ class App extends WebrcadeRetroApp {
       return appProps.customBios.trim();
     }
     return appProps.pcecd_bios;
+  }
+
+  isBiosRequired() {
+    return this.isDiscBased();
+  }
+
+  isDiscBased() {
+    return this.appProps.type === APP_TYPE_KEYS.RETRO_PCE_FAST;
   }
 
   renderPauseScreen() {
