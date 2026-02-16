@@ -121,6 +121,35 @@ export class Emulator extends RetroAppWrapper {
     return this.prefs;
   }
 
+  PCE_DEFAULT_HEADER = Uint8Array.from([
+    0x48, 0x55, 0x42, 0x4D,
+    0x00, 0x88, 0x10, 0x80,
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00,
+  ]);
+
+  isDefaultPceSram(data) {
+    if (!data || data.length !== 2048) {
+      return false;
+    }
+
+    // Check header
+    for (let i = 0; i < this.PCE_DEFAULT_HEADER.length; i++) {
+      if (data[i] !== this.PCE_DEFAULT_HEADER[i]) {
+        return false;
+      }
+    }
+
+    // Check rest is zero
+    for (let i = this.PCE_DEFAULT_HEADER.length; i < data.length; i++) {
+      if (data[i] !== 0x00) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   async saveState() {
     const { saveStatePath, started } = this;
     const { FS, Module } = window;
@@ -143,10 +172,14 @@ export class Emulator extends RetroAppWrapper {
         s = FS.readFile(path);
         if (s) {
           LOG.info('Found save file: ' + path);
-          files.push({
-            name: this.SAVE_NAME,
-            content: s,
-          });
+          if (!this.isDefaultPceSram(s)) {
+            files.push({
+              name: this.SAVE_NAME,
+              content: s,
+            });
+          } else {
+            LOG.info('PCE SRAM is default. Skipping write.');
+          }
         }
       } catch (e) {}
 
