@@ -2,19 +2,21 @@ import React from 'react';
 import { Component } from 'react';
 
 import { Pce2GamepadControls, Pce2KeyboardControls, Pce6GamepadControls, Pce6KeyboardControls } from './controls';
+import { PceSettingsEditor } from './settings';
 
 import {
-  AppSettingsEditor,
   CustomPauseScreen,
   EditorScreen,
   GamepadWhiteImage,
   KeyboardWhiteImage,
   PauseScreenButton,
+  PceBackground,
   PceCdBackground,
   Resources,
   SaveStatesEditor,
   SaveWhiteImage,
   SettingsAppWhiteImage,
+  APP_TYPE_KEYS,
   TEXT_IDS,
 } from '@webrcade/app-common';
 
@@ -67,6 +69,8 @@ export class EmulatorPauseScreen extends Component {
     if (!loaded) {
       return null;
     }
+
+    const isCd = emulator.getProps().type === APP_TYPE_KEYS.RETRO_PCE_FAST;
 
     const additionalButtons = [
       <PauseScreenButton
@@ -158,14 +162,14 @@ export class EmulatorPauseScreen extends Component {
         ) : null}
 
         {mode === ModeEnum.PCE_SETTINGS ? (
-          <AppSettingsEditor
+          <PceSettingsEditor
             emulator={emulator}
             onClose={closeCallback}
           />
         ) : null}
         {mode === ModeEnum.STATE ? (
           <SaveStatesEditor
-            emptyImageSrc={PceCdBackground}
+            emptyImageSrc={isCd ? PceCdBackground : PceBackground}
             emulator={emulator}
             onClose={closeCallback}
             showStatusCallback={emulator.saveMessageCallback}
