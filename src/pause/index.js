@@ -5,6 +5,8 @@ import { Pce2GamepadControls, Pce2KeyboardControls, Pce6GamepadControls, Pce6Key
 import { PceSettingsEditor } from './settings';
 
 import {
+  BoltWhiteImage,
+  CheatsSettingsEditor,
   CustomPauseScreen,
   EditorScreen,
   GamepadWhiteImage,
@@ -32,10 +34,11 @@ export class EmulatorPauseScreen extends Component {
     PAUSE: 'pause',
     CONTROLS: 'controls',
     PCE_SETTINGS: 'pce-settings',
+    CHEATS: 'cheats',
     STATE: 'state',
   };
 
-  ADDITIONAL_BUTTON_REFS = [React.createRef(), React.createRef(), React.createRef()];
+  ADDITIONAL_BUTTON_REFS = [React.createRef(), React.createRef(), React.createRef(), React.createRef()];
 
   componentDidMount() {
     const { loaded } = this.state;
@@ -100,14 +103,30 @@ export class EmulatorPauseScreen extends Component {
       />
     );
 
+    if (emulator.getCheatsService().getList().length > 0) {
+      additionalButtons.push(
+        <PauseScreenButton
+          imgSrc={BoltWhiteImage}
+          buttonRef={ADDITIONAL_BUTTON_REFS[2]}
+          label="Cheats"
+          onHandlePad={(focusGrid, e) =>
+            focusGrid.moveFocus(e.type, ADDITIONAL_BUTTON_REFS[2])
+          }
+          onClick={() => {
+            this.setState({ mode: ModeEnum.CHEATS });
+          }}
+        />
+      );
+    }
+
     if (cloudEnabled) {
       additionalButtons.push(
         <PauseScreenButton
           imgSrc={SaveWhiteImage}
-          buttonRef={ADDITIONAL_BUTTON_REFS[2]}
+          buttonRef={ADDITIONAL_BUTTON_REFS[3]}
           label={Resources.getText(TEXT_IDS.SAVE_STATES)}
           onHandlePad={(focusGrid, e) =>
-            focusGrid.moveFocus(e.type, ADDITIONAL_BUTTON_REFS[2])
+            focusGrid.moveFocus(e.type, ADDITIONAL_BUTTON_REFS[3])
           }
           onClick={() => {
             this.setState({ mode: ModeEnum.STATE });
@@ -115,7 +134,6 @@ export class EmulatorPauseScreen extends Component {
         />
       );
     }
-
 
     const emProps = emulator.getProps();
 
@@ -163,6 +181,12 @@ export class EmulatorPauseScreen extends Component {
 
         {mode === ModeEnum.PCE_SETTINGS ? (
           <PceSettingsEditor
+            emulator={emulator}
+            onClose={closeCallback}
+          />
+        ) : null}
+        {mode === ModeEnum.CHEATS ? (
+          <CheatsSettingsEditor
             emulator={emulator}
             onClose={closeCallback}
           />
