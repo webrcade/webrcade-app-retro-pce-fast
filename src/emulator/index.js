@@ -113,6 +113,11 @@ export class Emulator extends RetroAppWrapper {
     return loop;
   }
 
+  getHashFileExtension() {
+    const type = this.getProps().type;
+    return type === 'retro-pce-fast' ? 'chd' : 'pce';
+  }
+
   getScriptUrl() {
     return 'js/mednafen_pce_fast_libretro.js';
   }
