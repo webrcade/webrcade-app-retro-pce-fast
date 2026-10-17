@@ -218,6 +218,7 @@ export class EmulatorPauseScreen extends Component {
           <PceSettingsEditor
             emulator={emulator}
             onClose={closeCallback}
+            showOnScreenControls={true}
           />
         ) : null}
         {mode === ModeEnum.CHEATS ? (
